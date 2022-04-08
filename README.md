@@ -17,6 +17,8 @@
 - !shrug: Add `¯\_(ツ)_/¯` to the end of your message
 - !emoji_size: Set the default size for custom emojis
 - !emoji_list: Get a list of available emojis
+#### Ratelimit
+Commands activated by users that aren't from the user itself are ratelimited, with a default of 1 command every 10 seconds. Commands activated by the user running the bot are not ratelimited.
 
 ### Custom emojis
 To use custom emojis, they must be added to the bot. Put any square image in the `data/emojis/` directory. The image has to be square due to the resizing method used. Any image type that can be opened by Pillow, the Python image library, is supported. The name of the file is used as the name of the emoji. For example, the file `kekw.png` can be used as a custom emoji by typing `:kekw:` in chat. The bot does not need to reload for new emojis to be added.
