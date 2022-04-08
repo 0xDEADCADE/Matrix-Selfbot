@@ -35,6 +35,8 @@ def load_data(path, default={}):
                 return json.load(f)
         except json.decoder.JSONDecodeError:
             return default
+    else:
+        return default
 
 # Cache for files sent to the homeserver, prevents reuploading existing files
 file_cache = load_data(settings["file_cache_path"])
