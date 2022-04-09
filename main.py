@@ -55,6 +55,14 @@ client = None
 ratelimits = {}
 
 # Common function definitions
+# Filter a title for local lookup with XKCD
+def filter_xkcd_title(title):
+    filtered_title = ""
+    for char in title.lower().split("(")[0]:
+        if (char.isdecimal() or char.isalpha()) and (not char == " "):
+            filtered_title += char
+    return filtered_title
+
 # Grab a list of all emojis on disk
 def list_emojis():
     global settings
@@ -213,6 +221,17 @@ async def xkcd(args, room, event):
     comic = ""
     if len(args) == 1 and args[0].isdecimal():
         comic = args[0] + "/"
+    elif len(args) > 0:
+        lookup = {}
+        r = requests.get("https://xkcd.com/archive/")
+        for line in r.text.split("\n"):
+            if "<a href=\"" in line and "\" title=\"2" in line:
+                num = line.split("/")[1]
+                title = filter_xkcd_title(line.split(">")[1].split("<")[0])
+                lookup[title] = num
+        user_title = filter_xkcd_title(" ".join(args))
+        if user_title in lookup.keys():
+            comic = lookup[user_title] + "/"
     try:
         r = requests.get(f"https://xkcd.com/{comic}info.0.json")
         rj = json.loads(r.text)
