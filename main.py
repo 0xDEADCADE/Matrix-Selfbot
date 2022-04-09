@@ -232,15 +232,18 @@ async def xkcd(args, room, event):
         user_title = filter_xkcd_title(" ".join(args))
         if user_title in lookup.keys():
             comic = lookup[user_title] + "/"
-    try:
-        r = requests.get(f"https://xkcd.com/{comic}info.0.json")
+    r = requests.get(f"https://xkcd.com/{comic}info.0.json")
+    if settings["debug"]:
         rj = json.loads(r.text)
-        filename = download_file(rj["img"], settings["cache_path"] + "/" + str(rj["num"]) + "." + rj["img"].split(".")[-1])
-        image = await send_file(filename)
-        await send_text(room.room_id, f"{rj['year']}/{rj['month']}/{rj['day']}, {str(rj['num'])}: <a href=\"https://xkcd.com/{str(rj['num'])}/\">{rj['safe_title']}</a>")
-        return await send_image(room.room_id, image, rj['alt'])
-    except Exception:
-        return await send_text(room.room_id, "Failed to get XKCD!")
+    else:
+        try:
+            rj = json.loads(r.text)
+        except Exception:
+            return await send_text(room.room_id, "Failed to get XKCD!")
+    filename = download_file(rj["img"], settings["cache_path"] + "/" + str(rj["num"]) + "." + rj["img"].split(".")[-1])
+    image = await send_file(filename)
+    await send_text(room.room_id, f"{rj['year']}/{rj['month']}/{rj['day']}, {str(rj['num'])}: <a href=\"https://xkcd.com/{str(rj['num'])}/\">{rj['safe_title']}</a>")
+    return await send_image(room.room_id, image, rj['alt'])
 
 async def message_callback(room: nio.MatrixRoom, event: nio.RoomMessageText) -> None:
     global client, settings, emojis
