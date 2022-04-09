@@ -153,6 +153,10 @@ async def send_text(room_id, text):
     formatted = formatted.replace("\n", "<br>")
     return await client.room_send(room_id=room_id, message_type="m.room.message", content={"msgtype": "m.text", "body": unformatted + " (SelfBot)", "format": "org.matrix.custom.html", "formatted_body": formatted + (f" (<a href=\"{settings['source_url']}\">SelfBot</a>)" if settings["source_url"] else " (SelfBot)")}, ignore_unverified_devices=True)
 
+# Send a reaction
+async def send_reaction(room_id, event_id, emoji):
+    return await client.room_send(room_id=room_id, message_type="m.reaction", content={"m.relates_to": {"rel_type": "m.annotation", "event_id": event_id, "key": emoji}}, ignore_unverified_devices=True)
+
 # Commands definition
 # Appends shrug to the end of the message
 async def shrug(args, room, event):
@@ -244,6 +248,40 @@ async def xkcd(args, room, event):
     image = await send_file(filename)
     await send_text(room.room_id, f"{rj['year']}/{rj['month']}/{rj['day']}, {str(rj['num'])}: <a href=\"https://xkcd.com/{str(rj['num'])}/\">{rj['safe_title']}</a>")
     return await send_image(room.room_id, image, rj['alt'])
+
+# Create a poll
+async def poll(args, room, event):
+    parsed_args = []
+    base_offset_emoji = 127462
+    for arg in args:
+        if arg.startswith('"'):
+            if arg.endswith('"'):
+                parsed_args.append(arg[1:][:-1])
+            else:
+                parsed_args.append(arg[1:])
+        elif arg.endswith('"'):
+            parsed_args[-1] += " " + arg[:-1]
+        else:
+            parsed_args[-1] += " " + arg
+    if len(parsed_args) < 3:
+        return await send_text(room.room_id, "Please provide at least 2 options")
+    question = parsed_args[0]
+    options = parsed_args[1:]
+    message = f"Poll:\n{question}\n"
+    for n, option in enumerate(options):
+        message += chr(base_offset_emoji + n) + ": " + option + "\n"
+        if option.lower() == "yes":
+            message = message.replace(chr(base_offset_emoji + n), chr(9989))
+        elif option.lower() == "no":
+            message = message.replace(chr(base_offset_emoji + n), chr(10060))
+    poll_message = await send_text(room.room_id, message)
+    for n, option in enumerate(options):
+        reaction_emoji = chr(base_offset_emoji + n)
+        if option.lower() == "yes":
+            reaction_emoji = chr(9989)
+        elif option.lower() == "no":
+            reaction_emoji = chr(10060)
+        await send_reaction(room.room_id, poll_message.event_id, reaction_emoji)
 
 async def message_callback(room: nio.MatrixRoom, event: nio.RoomMessageText) -> None:
     global client, settings, emojis
