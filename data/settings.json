@@ -17,16 +17,18 @@
         "ping",
         "roll",
         "xkcd",
+        "poll",
         "help"
     ],
     "help_messages": {
-        "help": "Admin commands:\n{prefix}shrug: Append shrug to the message\n{prefix}emoji_size {size}: Set default emoji size\n{prefix}emoji_list: Get a list of usable custom emojis\nUser commands:\n{prefix}ping: Ping the selfbot (or as admin, any host)\n{prefix}roll: Roll a dice, provide a number to select dice sides\n{prefix}xkcd: Get an XKCD comic\n{prefix}help: Get information on commands\n\nArguments: (optional) [required] {admin only, optional} {[admin only, required]}\nDo {prefix}help (command) to see command help.",
+        "help": "Admin commands:\n{prefix}shrug: Append shrug to the message\n{prefix}emoji_size {size}: Set default emoji size\n{prefix}emoji_list: Get a list of usable custom emojis\nUser commands:\n{prefix}ping: Ping the selfbot (or as admin, any host)\n{prefix}roll: Roll a dice, provide a number to select dice sides\n{prefix}xkcd: Get an XKCD comic\n{prefix}poll: Create a poll\n{prefix}help: Get information on commands\n\nArguments: (optional) [required] {admin only, optional} {[admin only, required]}\nDo {prefix}help (command) to see command help.",
         "ping": "{prefix}ping {Host}: Ping the selfbot (or any host)",
         "roll": "{prefix}roll (Number): Roll a dice (with number sides)",
         "xkcd": "{prefix}xkcd (Number/Title): Get an XKCD comic",
         "shrug": "{prefix}shrug {text}: Append ¯\\_(ツ)_/¯ to the text",
         "emoji_size": "{prefix}emoji_size {size}: Set the default emoji size",
-        "emoji_list": "{prefix}emoji_list: Get a list of usable custom emojis"
+        "emoji_list": "{prefix}emoji_list: Get a list of usable custom emojis",
+        "poll": "{prefix}poll \"[Question]\" \"[Answer 1]\" \"[Answer 2]\" \"(Answer 3+)\": Create a poll"
     },
     "source_url": "https://github.com/0xDEADCADE/Matrix-Selfbot"
 }
